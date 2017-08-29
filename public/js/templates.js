@@ -1,6 +1,6 @@
 // NOTE: requires bootstrap for styling
 
-const genOption = (config)=> {
+const drawOption = (config)=> {
   let template = `
     <option value='${config.value}'>
       ${config.name}
@@ -11,8 +11,28 @@ const genOption = (config)=> {
   $(config.parent).append($html);
 }
 
+const drawPick = (config)=> {
+  let template = `
+    <li class='list-group-item'>
+      ${config.name}
+      <button class='btn btn-warning btn-sm pull-right'>x</button>
+      <br clear='both' />
+    </li>
+  `;
 
-const genPicker = (config)=> {
+  let $html = $(template);
+    // $button = $html.find('button');
+
+  $html.on('click', 'button', function() {
+    $html.remove();
+  })
+
+  if (config.replace) $(config.parent).html($html);
+  else $(config.parent).append($html);
+}
+
+
+const drawPicker = (config)=> {
   let template = `
     <li class='list-group-item'>
       ${config.title}
@@ -28,7 +48,7 @@ const genPicker = (config)=> {
     $button = $html.find('button');
 
   config.options.forEach(option=> {
-    genOption({
+    drawOption({
       parent: $select,
       name: option.name,
       value: option.id
@@ -36,33 +56,20 @@ const genPicker = (config)=> {
   })
 
   $html.on('click', 'button', function() {
-    console.log('did stuff');
+    let name = $select.find(':selected').text().trim()
+    if (config.container.includes(name)) return;
+
+    if (config.fn) config.fn(config.container, name);
+    else {
+      $(config.appendTo).append()
+      drawPick({
+        parent: config.appendTo,
+        name
+      })
+
+      config.container.push(name);
+    }
   })
 
   $(config.parent).append($html);
 }
-
-
-/*
-<li class='list-group-item'>
-  Hotels
-  <br />
-  <select id="dd-hotels" style='width: 80%' class='form-control input-sm pull-left'>
-    <!-- {% for item in hotels %}
-    <option value='{{ item.id }}'>
-      {{ item.name }} 
-    </option>
-    {% endfor %} -->
-  </select>
-  <button class='btn btn-primary btn-sm pull-right'>+</button>
-  <br clear='all' />
-</li>
-*/
-
-/*
-  hotels.forEach(hotel=> genOption({
-    parent: '#dd-hotels',
-    name: hotel.name,
-    value: hotel.id
-  }))
-*/
