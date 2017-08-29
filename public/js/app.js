@@ -1,39 +1,21 @@
 $(function(){
   var map = new Map('map');
+  
+  genPicker({
+    parent: '.all-options',
+    title: 'Hotels',
+    options: hotels
+  })
 
-  // templates
-  const genOption = (config)=> {
-    let template = `
-      <option value='${config.value}'>
-        ${config.name}
-      </option>
-    `;
+  genPicker({
+    parent: '.all-options',
+    title: 'Restaurants',
+    options: restaurants
+  })
 
-    let $html = $(template);
-    $(config.parent).append($html);
-  }
-
-
-  hotels.forEach(hotel=> genOption({
-    parent: '#dd-hotels',
-    name: hotel.name,
-    value: hotel.id
-  }))
-
-  restaurants.forEach(restaurant=> genOption({
-    parent: '#dd-restaurants',
-    name: restaurant.name,
-    value: restaurant.id
-  }))
-
-  activities.forEach(activitie=> genOption({
-    parent: '#dd-activities',
-    name: activitie.name,
-    value: activitie.id
-  }))
-
-
-  // $('#dd-hotels')
-  // $('#dd-restaurants')
-  // $('#dd-activities')
+  genPicker({
+    parent: '.all-options',
+    title: 'Activities',
+    options: activities
+  })
 });
