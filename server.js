@@ -1,13 +1,15 @@
 const express = require('express');
 const path = require('path');
 const swig = require('swig');
+const nunjucks = require('nunjucks');
 swig.setDefaults({ cache: false });
 const db = require('./db');
 const { Hotel, Restaurant, Activity, Place } = db.models;
 
 const app = express();
 app.set('view engine', 'html');
-app.engine('html', swig.renderFile);
+app.engine('html', nunjucks.render);
+nunjucks.configure('views', { noCache: true })
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/vendor', express.static(path.join(__dirname, 'node_modules')));
