@@ -9,7 +9,7 @@ $(function(){
 
   $('#remove-day').on('click', function() {
     if ($('#day-panels').children('.panel-body').length == 1) return;
-    
+
     let $activePanel = $('.activeDay'),
       $activeTab = $('#tabs .active');
 
@@ -34,20 +34,21 @@ $(function(){
     parent: '.all-options',
     title: 'Hotels',
     options: hotels,
-    appendTo: '.activeDay .hotels'
+    appendTo: '.activeDay .hotels ul',
+    replace: true
   })
 
   genPicker({
     parent: '.all-options',
     title: 'Restaurants',
     options: restaurants,
-    appendTo: '.activeDay .restaurants'
+    appendTo: '.activeDay .restaurants ul'
   })
 
   genPicker({
     parent: '.all-options',
     title: 'Activities',
     options: activities,
-    appendTo: '.activeDay .activities'
+    appendTo: '.activeDay .activities ul'
   })
 });

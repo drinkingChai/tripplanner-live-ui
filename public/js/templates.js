@@ -21,8 +21,8 @@ const genItem = (config)=> {
   `;
 
   let $html = $(template);
+  if (config.replace) $(config.parent).empty();
   $(config.parent).append($html);
-  return $html;
 }
 
 const genPicker = (config)=> {
@@ -60,7 +60,8 @@ const genPicker = (config)=> {
 
     genItem({
       parent: config.appendTo,
-      name
+      name,
+      replace: config.replace
     })
   })
 
