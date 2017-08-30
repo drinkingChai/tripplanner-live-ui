@@ -11,6 +11,19 @@ const genOption = (config)=> {
   $(config.parent).append($html);
 }
 
+const genItem = (config)=> {
+  let template = `
+  <li class='list-group-item'>
+    <span>${config.name}</span>
+    <button class='btn btn-warning btn-sm pull-right'>x</button>
+    <br clear='both' />
+  </li>
+  `;
+
+  let $html = $(template);
+  $(config.parent).append($html);
+  return $html;
+}
 
 const genPicker = (config)=> {
   let template = `
@@ -36,33 +49,79 @@ const genPicker = (config)=> {
   })
 
   $html.on('click', 'button', function() {
-    console.log('did stuff');
+    // send the option
+    // find children
+    let children = $(config.appendTo).children().map(function(item) {
+      return $(this).find('span').text().trim();
+    }).toArray();
+
+    let name = $select.find(':selected').text().trim();
+    if (children.includes(name)) return;
+
+    genItem({
+      parent: config.appendTo,
+      name
+    })
   })
 
   $(config.parent).append($html);
 }
 
+// helper
+const switchTab = (tab, panel)=> {
+  let $panels = $('#day-panels').children('.panel-body');
+  $panels.hide();
+  $('#day-panels .activeDay').removeClass('activeDay');
+  $('#tabs .active').removeClass('active');
 
-/*
-<li class='list-group-item'>
-  Hotels
-  <br />
-  <select id="dd-hotels" style='width: 80%' class='form-control input-sm pull-left'>
-    <!-- {% for item in hotels %}
-    <option value='{{ item.id }}'>
-      {{ item.name }} 
-    </option>
-    {% endfor %} -->
-  </select>
-  <button class='btn btn-primary btn-sm pull-right'>+</button>
-  <br clear='all' />
-</li>
-*/
+  panel.addClass('activeDay');
+  panel.show();
+  tab.addClass('active');
 
-/*
-  hotels.forEach(hotel=> genOption({
-    parent: '#dd-hotels',
-    name: hotel.name,
-    value: hotel.id
-  }))
-*/
+  renameTabs();
+}
+
+const renameTabs = ()=> {
+  $('#tabs li').each(function(index) {
+    $(this).children('a').html(index + 1);
+  })
+}
+
+const makeDay = (config)=> {
+  // a tab
+  // a container
+  let template = `
+    <div class="panel-body">
+      <div class="hotels">
+        Hotels
+        <ul></ul>
+      </div>
+      <div class="restaurants">
+        Restaurants
+        <ul></ul>
+      </div>
+      <div class="activities">
+        Activities
+        <ul></ul>
+      </div>
+    </div>
+  `;
+
+  let tabTemplate = `
+    <li class='active'>
+      <a href='#'></a>
+    </li>
+  `;
+
+  let $panel = $(template),
+    $tab = $(tabTemplate);
+
+  $tab.on('click', function() {
+    switchTab($tab, $panel);
+  })
+
+  $(config.panelParent).append($panel);
+  $(config.tabParent).append($tab);
+
+  switchTab($tab, $panel);
+}
