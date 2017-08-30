@@ -21,6 +21,11 @@ const genItem = (config)=> {
   `;
 
   let $html = $(template);
+
+  $html.on('click', 'button', function() {
+    $html.remove();
+  })
+
   if (config.replace) $(config.parent).empty();
   $(config.parent).append($html);
 }
@@ -95,15 +100,15 @@ const makeDay = (config)=> {
     <div class="panel-body">
       <div class="hotels">
         Hotels
-        <ul></ul>
+        <ul class="list-group"></ul>
       </div>
       <div class="restaurants">
         Restaurants
-        <ul></ul>
+        <ul class="list-group"></ul>
       </div>
       <div class="activities">
         Activities
-        <ul></ul>
+        <ul class="list-group"></ul>
       </div>
     </div>
   `;
