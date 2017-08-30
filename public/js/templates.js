@@ -26,7 +26,6 @@ const genItem = (config)=> {
     $html.remove();
   })
 
-  if (config.replace) $(config.parent).empty();
   $(config.parent).append($html);
 }
 
@@ -62,18 +61,19 @@ const genPicker = (config)=> {
 
     let name = $select.find(':selected').text().trim();
     if (children.includes(name)) return;
+    if (children.length == config.limit && !config.replace) return;
+    if (config.replace) $(config.appendTo).empty();
 
     genItem({
       parent: config.appendTo,
-      name,
-      replace: config.replace
+      name
     })
   })
 
   $(config.parent).append($html);
 }
 
-// helper
+// helpers
 const switchTab = (tab, panel)=> {
   let $panels = $('#day-panels').children('.panel-body');
   $panels.hide();

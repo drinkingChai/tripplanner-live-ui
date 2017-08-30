@@ -1,5 +1,5 @@
 $(function(){
-  var map = new Map('map');
+  // var map = new Map('map');
   $('#add-day').on('click', function() {
     makeDay({
       panelParent: '#day-panels',
@@ -35,14 +35,16 @@ $(function(){
     title: 'Hotels',
     options: hotels,
     appendTo: '.activeDay .hotels ul',
-    replace: true
+    replace: true,
+    limit: 1
   })
 
   genPicker({
     parent: '.all-options',
     title: 'Restaurants',
     options: restaurants,
-    appendTo: '.activeDay .restaurants ul'
+    appendTo: '.activeDay .restaurants ul',
+    limit: 3
   })
 
   genPicker({
