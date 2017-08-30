@@ -25,8 +25,36 @@ $(function(){
       associate: newDay
     })
 
+    $('#tabs li').each(function(index) {
+      $(this).find('a').html(index + 1);
+    })
+  })
 
-    console.log(days)
+  $('#remove-day').on('click', function() {
+    let $current = $('#tabs li.active'),
+      hasNext = $current.next().length;
+    if (hasNext) $current.next().addClass('active');
+    else $current.prev().addClass('active');
+
+    let index = $current.index();
+    if (days[index + 1]) active = days[index + 1];
+    else if (days[index - 1]) active = days[index - 1];
+    else active = null;
+
+    days.splice(index, 1);
+
+    if (active) {
+      drawDay({
+        parent: '#days',
+        active
+      });
+    }
+
+    $current.remove();
+
+    $('#tabs li').each(function(index) {
+      $(this).find('a').html(index + 1);
+    })
   })
 
 

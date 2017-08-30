@@ -144,8 +144,6 @@ const drawDay = (config)=> {
     container: config.active.activities
   })
 
-  console.log(config.active);
-
   config.active.hotels.forEach(hotel=> {
     drawPick({
       parent: $('#today-hotel'),
@@ -185,8 +183,6 @@ const drawTab = (config)=> {
 
   $html.on('click', 'a', function() {
     active = config.associate;
-    // console.log(config.associate);
-    // console.log('firing');
     $('#tabs li.active').removeClass('active');
     $(this).parent().addClass('active');
 
