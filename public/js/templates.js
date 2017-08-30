@@ -21,10 +21,14 @@ const drawPick = (config)=> {
   `;
 
   let $html = $(template);
-    // $button = $html.find('button');
 
   $html.on('click', 'button', function() {
     $html.remove();
+    // console.log(config.name);
+    // config.container = config.container.filter(function(name) {
+    //   return name !== config.name;
+    // });
+    config.container.splice(config.container.indexOf(config.name), 1);
   })
 
   if (config.replace) $(config.parent).html($html);
@@ -64,7 +68,8 @@ const drawPicker = (config)=> {
       $(config.appendTo).append()
       drawPick({
         parent: config.appendTo,
-        name
+        name,
+        container: config.container
       })
 
       config.container.push(name);
@@ -72,4 +77,122 @@ const drawPicker = (config)=> {
   })
 
   $(config.parent).append($html);
+}
+
+
+const drawDay = (config)=> {
+  let template = `
+    <div>
+      <div>
+        Hotels
+        <ul id='today-hotel' class='list-group'>
+        </ul>
+      </div>
+
+      <div>
+        Restaurants
+        <ul id='today-restaurant' class='list-group'>
+        </ul>
+      </div>
+
+      <div>
+        Activities
+        <ul id='today-activity' class='list-group'>
+        </ul>
+      </div>
+    </div>
+  `;
+
+  let $html = $(template);
+  $(config.parent).empty();
+  $(config.parent).append($html);
+  $('.all-options').empty();
+
+  drawPicker({
+    parent: '.all-options',
+    title: 'Hotels',
+    options: hotels,
+    appendTo: '#today-hotel',
+    container: config.active.hotels,
+    fn: function(arr, item) {
+      if (!arr.length) arr.push(item);
+      else {
+        arr[0] = item;
+      }
+      drawPick({
+        parent: '#today-hotel',
+        name: item,
+        replace: true,
+        container: arr
+      })
+    }
+  })
+
+  drawPicker({
+    parent: '.all-options',
+    title: 'Restaurants',
+    options: restaurants,
+    appendTo: '#today-restaurant',
+    container: config.active.restaurants
+  })
+
+  drawPicker({
+    parent: '.all-options',
+    title: 'Activities',
+    options: activities,
+    appendTo: '#today-activity',
+    container: config.active.activities
+  })
+
+  console.log(config.active);
+
+  config.active.hotels.forEach(hotel=> {
+    drawPick({
+      parent: $('#today-hotel'),
+      name: hotel,
+      container: config.active.hotels
+    })
+  })
+
+  config.active.restaurants.forEach(restaurant=> {
+    drawPick({
+      parent: $('#today-restaurant'),
+      name: restaurant,
+      container: config.active.restaurants
+    })
+  })
+
+  config.active.activities.forEach(activity=> {
+    drawPick({
+      parent: $('#today-activity'),
+      name: activity,
+      container: config.active.activities
+    })
+  })
+
+  return $html;
+}
+
+const drawTab = (config)=> {
+  let template = `
+    <li class='active'>
+      <a href='#'>${config.num}</a>
+    </li>
+  `;
+
+  let $html = $(template);
+  $(config.parent).append($html);
+
+  $html.on('click', 'a', function() {
+    active = config.associate;
+    // console.log(config.associate);
+    // console.log('firing');
+    $('#tabs li.active').removeClass('active');
+    $(this).parent().addClass('active');
+
+    drawDay({
+      parent: '#days',
+      active
+    });
+  })
 }

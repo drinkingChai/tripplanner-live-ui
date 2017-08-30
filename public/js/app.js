@@ -8,48 +8,41 @@ $(function(){
     this.activities = [];
   }
 
-  let days = [
-    new Day(),
-    new Day()
-  ];
+  $('#add-day').on('click', function() {
+    $('#tabs li.active').removeClass('active');
 
+    let newDay = new Day();
+    days.push(newDay);
+    active = newDay;
+
+    drawDay({
+      parent: '#days',
+      active
+    });
+
+    drawTab({
+      parent: '#tabs',
+      associate: newDay
+    })
+
+
+    console.log(days)
+  })
+
+
+  let days = [];
   let newDay = new Day();
+  days.push(newDay);
+  let active = newDay;
 
-  drawPicker({
-    parent: '.all-options',
-    title: 'Hotels',
-    options: hotels,
-    appendTo: '#today-hotel',
-    container: newDay.hotels,
-    fn: function(arr, item) {
-      if (!arr.length) arr.push(item);
-      else {
-        arr[0] = item;
-      }
-      drawPick({
-        parent: '#today-hotel',
-        name: item,
-        replace: true
-      })
-    }
-  })
+  drawDay({
+    parent: '#days',
+    active
+  });
 
-  drawPicker({
-    parent: '.all-options',
-    title: 'Restaurants',
-    options: restaurants,
-    appendTo: '#today-restaurant',
-    container: newDay.restaurants
-  })
-
-  drawPicker({
-    parent: '.all-options',
-    title: 'Activities',
-    options: activities,
-    appendTo: '#today-activity',
-    container: newDay.activities
-    // fn: function(container) {
-    //   container.append('<span>stuff</span>');
-    // }
+  drawTab({
+    parent: '#tabs',
+    associate: newDay,
+    num: 1
   })
 });
