@@ -2,30 +2,12 @@
 
 const genOption = (config)=> {
   let template = `
-    <option value='${config.value}'>
+    <option value='${config.value}' data-name='${config.name}' data-id='${config.value}'>
       ${config.name}
     </option>
   `;
 
   let $html = $(template);
-  $(config.parent).append($html);
-}
-
-const genItem = (config)=> {
-  let template = `
-  <li class='list-group-item'>
-    <span>${config.name}</span>
-    <button class='btn btn-warning btn-sm pull-right'>x</button>
-    <br clear='both' />
-  </li>
-  `;
-
-  let $html = $(template);
-
-  $html.on('click', 'button', function() {
-    $html.remove();
-  })
-
   $(config.parent).append($html);
 }
 
@@ -52,48 +34,57 @@ const genPicker = (config)=> {
     })
   })
 
-  $html.on('click', 'button', function() {
-    // send the option
-    // find children
-    let children = $(config.appendTo).children().map(function(item) {
-      return $(this).find('span').text().trim();
-    }).toArray();
+  $button.on('click', function() {
+    let $current = $select.find(':selected');
 
-    let name = $select.find(':selected').text().trim();
-    if (children.includes(name)) return;
-    if (children.length == config.limit && !config.replace) return;
-    if (config.replace) $(config.appendTo).empty();
-
-    genItem({
-      parent: config.appendTo,
-      name
-    })
+    config.data.activeDay.addTo(config.arrName, $current.data() )
   })
 
   $(config.parent).append($html);
 }
 
-// helpers
-const switchTab = (tab, panel)=> {
-  let $panels = $('#day-panels').children('.panel-body');
-  $panels.hide();
-  $('#day-panels .activeDay').removeClass('activeDay');
-  $('#tabs .active').removeClass('active');
+const genTabPanel = (config)=> {
+  let template = `
+    <li class=''>
+      <a href='#'></a>
+    </li>
+  `;
 
-  panel.addClass('activeDay');
-  panel.show();
-  tab.addClass('active');
+  config.data.days.forEach((day, i)=> {
+    let $html = $(template);
+    $html.find('a').html(i + 1)
+    if (day == config.data.activeDay) $html.addClass('active');
 
-  renameTabs();
-}
+    $html.on('click', 'a', function() {
+      config.data.activeDay = day;
+      config.data.activeDay.draw();
+      $(config.parent).find('li').removeClass('active');
+      $html.addClass('active');
+    })
 
-const renameTabs = ()=> {
-  $('#tabs li').each(function(index) {
-    $(this).children('a').html(index + 1);
+    $(config.parent).append($html);
   })
 }
 
-const makeDay = (config)=> {
+const genItem = (config)=> {
+  let template = `
+  <li class='list-group-item'>
+    <span>${config.item.name}</span>
+    <button class='btn btn-warning btn-sm pull-right'>x</button>
+    <br clear='both' />
+  </li>
+  `;
+
+  let $html = $(template);
+
+  $html.on('click', 'button', function() {
+    config.day.removeFrom(config.arrName, config.item);
+  })
+
+  $(config.parent).append($html);
+}
+
+const genDay = (config)=> {
   // a tab
   // a container
   let template = `
@@ -113,21 +104,39 @@ const makeDay = (config)=> {
     </div>
   `;
 
-  let tabTemplate = `
-    <li class='active'>
-      <a href='#'></a>
-    </li>
-  `;
+
 
   let $panel = $(template),
-    $tab = $(tabTemplate);
+    $hotels = $panel.find('.hotels ul'),
+    $restaurants = $panel.find('.restaurants ul'),
+    $activities = $panel.find('.activities ul');
 
-  $tab.on('click', function() {
-    switchTab($tab, $panel);
+  config.day.hotels.forEach(item=> {
+    genItem({
+      parent: $hotels,
+      item: item,
+      day: config.day,
+      arrName: 'hotels'
+    })
+  })
+
+  config.day.restaurants.forEach(item=> {
+    genItem({
+      parent: $restaurants,
+      item: item,
+      day: config.day,
+      arrName: 'restaurants'
+    })
+  })
+
+  config.day.activities.forEach(item=> {
+    genItem({
+      parent: $activities,
+      item: item,
+      day: config.day,
+      arrName: 'activities'
+    })
   })
 
   $(config.panelParent).append($panel);
-  $(config.tabParent).append($tab);
-
-  switchTab($tab, $panel);
 }
